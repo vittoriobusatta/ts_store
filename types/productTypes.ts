@@ -1,19 +1,4 @@
-interface ProductVariant {
-  id: string;
-  title: string;
-  quantityAvailable: number;
-  availableForSale: boolean;
-  price: {
-    amount: string;
-  };
-  compareAtPrice: {
-    amount: string;
-  } | null;
-  image: {
-    url: string;
-    altText: string;
-  };
-}
+import { ProductVariant } from 'types';
 
 type ProductVariantEdge = {
   node: ProductVariant;

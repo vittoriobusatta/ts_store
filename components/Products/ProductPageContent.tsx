@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { Product } from 'types';
+import ProductDetails from './ProductDetails';
 // import ProductDetails from './ProductDetails';
 // import RecommendedList from './RecommendedList';
 
@@ -42,13 +43,14 @@ export default function ProductPageContent({ product }: { product: Product }) {
                 : ''
             }
             `}
+            priority
           />
         ))}
       </div>
 
-      {/* <ProductDetails product={product} />
+      <ProductDetails product={product} />
 
-      <RecommendedList current={product} allProducts={allProducts} /> */}
+      {/* <RecommendedList current={product} allProducts={allProducts} /> */}
     </section>
   );
 }

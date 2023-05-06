@@ -1,4 +1,4 @@
-mutation RemoveFromCart($cartId: ID!, $lineIds: [ID!]!) {
+mutation DelFromCart($cartId: ID!, $lineIds: [ID!]!) {
   cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
     cart {
       id

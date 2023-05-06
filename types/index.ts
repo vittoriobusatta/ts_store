@@ -28,7 +28,7 @@ export interface VariantItem {
   handle: string;
   productType: string;
   variantQuantity: number;
-  cartId: string | null;
+  cartId: string;
   image: {
     src: string;
     alt: string;
@@ -36,13 +36,19 @@ export interface VariantItem {
   price: number;
 }
 
-// export interface AllProducts {
-//   map(arg0: (product: any) => { params: { handle: any } }): unknown;
-//   __typename: string;
-//   handle: string;
-//   id: string;
-//   title: string;
-//   productType: string;
-//   priceRange: ProductPriceRange;
-//   images: ImageConnection;
-// }
+export interface ProductVariant {
+  id: string;
+  title: string;
+  quantityAvailable: number;
+  availableForSale: boolean;
+  price: {
+    amount: string;
+  };
+  compareAtPrice: {
+    amount: string;
+  } | null;
+  image: {
+    url: string;
+    altText: string;
+  };
+}

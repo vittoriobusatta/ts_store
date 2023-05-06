@@ -23,6 +23,6 @@
       "@/graphql/*": ["graphql/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.graphql", "**/*.ts", "**/*.tsx", "pages/index.tsx", "libs/shopify/storefront.ts", "pages/products/[handle].tsx"],
+  "include": ["next-env.d.ts", "**/*.graphql", "**/*.ts", "**/*.tsx", "pages/index.tsx", "libs/shopify/storefront.ts", "pages/products/[handle].tsx", "redux/slice.ts"],
   "exclude": ["node_modules"]
 }

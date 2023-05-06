@@ -7,6 +7,9 @@ const {
 import queryAllProducts from '@/graphql/getAllProducts.graphql';
 import querySingleProduct from '@/graphql/getSingleProduct.graphql';
 import queryHandlesProducts from '@/graphql/getHandleProduct.graphql';
+import mutationAddToCart from '@/graphql/cart/AddToCart.graphql';
+import mutationCreateCart from '@/graphql/cart/CreateCart.graphql';
+import mutationDelFromCart from '@/graphql/cart/DelFromCart.graphql';
 
 const domain = process.env.SHOPIFY_STORE_DOMAIN;
 
@@ -80,201 +83,81 @@ export async function getSingleProduct(handle: string) {
   }
 }
 
-// export async function createCart(id, quantity) {
-//   const query = `
-//     mutation {
-//       cartCreate(
-//         input: {
-//           lines: [
-//             {
-//               quantity: ${quantity}
-//               merchandiseId: "${id}"
-//             }
-//           ]
-//         }
-//       ) {
-//         cart {
-//           id
-//           totalQuantity
-//           cost {
-//             checkoutChargeAmount {
-//               amount
-//             }
-//           }
-//           lines(first: 10) {
-//             edges {
-//               node {
-//                 id
-//                 quantity
-//                 merchandise {
-//                   ... on ProductVariant {
-//                     id
-//                     quantityAvailable
-//                     availableForSale
-//                     price {
-//                       amount
-//                     }
-//                     image {
-//                       url
-//                       altText
-//                     }
-//                   }
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//     `;
+export async function createCart(id: string, quantity: number) {
+  const { body } = mutationCreateCart.loc.source;
 
-//   try {
-//     const response = await storeClient.mutate({
-//       mutation: gql`
-//         ${query}
-//       `,
-//     });
+  try {
+    const response = await storeClient.mutate({
+      mutation: gql`
+        ${body}
+      `,
+      variables: {
+        id,
+        quantity,
+      },
+    });
 
-//     return response.data.cartCreate.cart;
-//   } catch (err) {
-//     console.error(err);
-//     return [];
-//   }
-// }
+    return response.data.cartCreate.cart;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+}
 
-// export async function addToCart(cartId, merchandiseId, quantity) {
-//   const query = `
-//     mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
-//       cartLinesAdd(cartId: $cartId, lines: $lines) {
-//         cart {
-//           id
-//           totalQuantity
-//           checkoutUrl
-//           cost {
-//             checkoutChargeAmount {
-//               amount
-//             }
-//           }
-//           lines(first: 10) {
-//             edges {
-//               node {
-//                 id
-//                 quantity
-//                 merchandise {
-//                   ... on ProductVariant {
-//                     id
-//                     title
-//                     quantityAvailable
-//                     availableForSale
-//                     price {
-//                       amount
-//                     }
-//                     image {
-//                       url
-//                       altText
-//                     }
-//                   }
-//                 }
-//               }
-//             }
-//           }
-//         }
-//         userErrors {
-//           field
-//           message
-//         }
-//       }
-//     }
-//   `;
+export async function addToCart(
+  cartId: string,
+  merchandiseId: string,
+  quantity: number,
+) {
+  const { body } = mutationAddToCart.loc.source;
 
-//   const variables = {
-//     cartId,
-//     lines: [
-//       {
-//         quantity,
-//         merchandiseId,
-//       },
-//     ],
-//   };
+  const variables = {
+    cartId,
+    lines: [
+      {
+        quantity,
+        merchandiseId,
+      },
+    ],
+  };
 
-//   try {
-//     const response = await storeClient.mutate({
-//       mutation: gql`
-//         ${query}
-//       `,
-//       variables,
-//     });
+  try {
+    const response = await storeClient.mutate({
+      mutation: gql`
+        ${body}
+      `,
+      variables,
+    });
 
-//     return response.data.cartLinesAdd.cart;
-//   } catch (err) {
-//     console.error(err);
-//     return [];
-//   }
-// }
+    return response.data.cartLinesAdd.cart;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+}
 
-// export async function delFromCart(cartId, lineId) {
-//   const mutation = `
-//   mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
-//     cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
-//       cart {
-//         id
-//         totalQuantity
-//         cost {
-//           checkoutChargeAmount {
-//             amount
-//           }
-//         }
-//         lines(first: 10) {
-//           edges {
-//             node {
-//               id
-//               quantity
-//               merchandise {
-//                 ... on ProductVariant {
-//                   id
-//                   title
-//                   quantityAvailable
-//                   availableForSale
-//                   price {
-//                     amount
-//                   }
-//                   image {
-//                     url
-//                     altText
-//                   }
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       }
-//       userErrors {
-//         field
-//         message
-//       }
-//     }
-//   }
-//   `;
+export async function delFromCart(cartId: string, lineId: string) {
+  const { body } = mutationDelFromCart.loc.source;
 
-//   const variables = {
-//     cartId,
-//     lineIds: [lineId],
-//   };
+  const variables = {
+    cartId,
+    lineIds: [lineId],
+  };
 
-//   try {
-//     const response = await storeClient.mutate({
-//       mutation: gql`
-//         ${mutation}
-//       `,
-//       variables,
-//     });
+  try {
+    const response = await storeClient.mutate({
+      mutation: gql`
+        ${body}
+      `,
+      variables,
+    });
 
-//     return response.data.cartLinesRemove.cart;
-//   } catch (err) {
-//     console.error(err);
-//     return [];
-//   }
-// }
+    return response.data.cartLinesRemove.cart;
+  } catch (err) {
+    console.error(err);
+    return [];
+  }
+}
 
 // export async function getCart(cartId) {
 //   const query = `
