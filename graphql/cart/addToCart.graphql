@@ -1,0 +1,41 @@
+mutation AddToCart($cartId: ID!, $lines: [CartLineInput!]!) {
+  cartLinesAdd(cartId: $cartId, lines: $lines) {
+    cart {
+      id
+      totalQuantity
+      checkoutUrl
+      cost {
+        checkoutChargeAmount {
+          amount
+        }
+      }
+      lines(first: 10) {
+        edges {
+          node {
+            id
+            quantity
+            merchandise {
+              ... on ProductVariant {
+                id
+                title
+                quantityAvailable
+                availableForSale
+                price {
+                  amount
+                }
+                image {
+                  url
+                  altText
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

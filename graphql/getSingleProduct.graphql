@@ -1,0 +1,50 @@
+query GetSingleProduct($handle: String) {
+  product(handle: $handle) {
+    id
+    handle
+    title
+    description
+    productType
+    priceRange {
+      minVariantPrice {
+        amount
+      }
+    }
+    compareAtPriceRange {
+      minVariantPrice {
+        amount
+      }
+    }
+    images(first: 5) {
+      edges {
+        node {
+          url
+          altText
+        }
+      }
+    }
+    color: metafield(namespace: "custom", key: "color") {
+      value
+    }
+    variants(first: 250) {
+      edges {
+        node {
+          id
+          title
+          quantityAvailable
+          availableForSale
+          price {
+            amount
+          }
+          compareAtPrice {
+            amount
+          }
+          image {
+            url
+            altText
+          }
+        }
+      }
+    }
+  }
+}

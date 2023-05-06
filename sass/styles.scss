@@ -1,0 +1,19 @@
+@import './01-config/variables';
+@import './01-config/animations';
+
+@import './02-base/base';
+@import './02-base/reset';
+@import './02-base/typography';
+
+@import './03-globals/header';
+@import './03-globals/footer';
+@import './03-globals/loader';
+@import './03-globals/menu';
+@import './03-globals/cart';
+
+@import './04-components/landing';
+@import './04-components/product';
+@import './04-components/success';
+@import './04-components/recommended';
+@import './04-components/search';
+

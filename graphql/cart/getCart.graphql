@@ -1,0 +1,28 @@
+query ($cartId: ID!){
+  cart(id: $cartId) {
+    id
+    totalQuantity
+    lines(first: 10) {
+      edges {
+        node {
+          id
+          quantity
+          merchandise {
+            ... on ProductVariant {
+              id
+              quantityAvailable
+              availableForSale
+              price {
+                amount
+              }
+              image {
+                url
+                altText
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+mutation CreateCart($id: ID!, $quantity: Int) {
+  cartCreate(input: { lines: [{ merchandiseId: $id, quantity: $quantity }] }) {
+    cart {
+      id
+      totalQuantity
+      cost {
+        checkoutChargeAmount {
+          amount
+        }
+      }
+      lines(first: 10) {
+        edges {
+          node {
+            id
+            quantity
+            merchandise {
+              ... on ProductVariant {
+                id
+                quantityAvailable
+                availableForSale
+                price {
+                  amount
+                }
+                image {
+                  url
+                  altText
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    userErrors {
+      code
+      field
+      message
+    }
+  }
+}
