@@ -1,5 +1,5 @@
-import { getAllProducts } from 'libs/shopify/storefront';
 import Head from 'next/head';
+import { getAllProducts } from 'libs/shopify/storefront';
 
 export async function getServerSideProps() {
   const products = await getAllProducts();
@@ -11,6 +11,8 @@ export async function getServerSideProps() {
 }
 
 export default function Home({ products }: { products: any }) {
+  console.log(products);
+
   return (
     <>
       <Head>
