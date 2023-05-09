@@ -1,11 +1,15 @@
+import { ThunkDispatch } from 'redux-thunk';
+
 import {
   ImageConnection,
   ProductPriceRange,
   ProductVariantConnection,
   compareAtPriceRange,
 } from './productTypes';
+import { RootState } from 'redux/store';
+import { Action } from '@reduxjs/toolkit';
 
-export interface Product {
+export type Product = {
   __typename: string;
   id: string;
   handle: string;
@@ -20,23 +24,23 @@ export interface Product {
     value: string;
   };
   variants: ProductVariantConnection;
-}
+};
 
-export interface VariantItem {
+export type VariantItem = {
   id: string;
   title: string;
   handle: string;
   productType: string;
   variantQuantity: number;
-  // cartId: string;
+  cartId: string;
   image: {
     src: string;
     alt: string;
   };
   price: number;
-}
+};
 
-export interface ProductVariant {
+export type ProductVariant = {
   id: string;
   title: string;
   quantityAvailable: number;
@@ -51,4 +55,7 @@ export interface ProductVariant {
     url: string;
     altText: string;
   };
-}
+};
+
+
+export type AppDispatch = ThunkDispatch<RootState, any, Action>;

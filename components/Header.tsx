@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import React from 'react';
+import { CartIcon } from './Vector';
+import { useSelector } from 'react-redux';
 
 function Header() {
-  // const quantity = useSelector((state) => state.cart.quantity);
+  const quantity = useSelector((state: any) => state.cart.quantity);
+  console.log(quantity);
 
   return (
     <header>
@@ -13,9 +16,9 @@ function Header() {
         {/* <SearchIcon search={search} setSearch={setSearch} /> */}
         {/* {search && <SearchBar setSearch={setSearch} />} */}
         <Link className="pre" href="/cart">
-          {/* <CartIcon /> */}
+          <CartIcon />
           <span className="pre__jewel">
-            {/* {quantity > 9 ? '9+' : quantity > 0 ? quantity : 0} */}
+            {quantity > 9 ? '9+' : quantity > 0 ? quantity : 0}
           </span>
         </Link>
       </div>

@@ -3,8 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { CLEAR_CART, CREATE_CART } from 'redux/slice';
-import { Product, ProductVariant, VariantItem } from 'types';
+import { ADD_TO_CART, CLEAR_CART, CREATE_CART } from 'redux/slice';
+import { AppDispatch, Product, ProductVariant, VariantItem } from 'types';
 import { formatPrice } from 'utils/helpers';
 // import { CloseIcon, SuccessIcon } from "../Vector";
 // import { CREATE_CART, ADD_TO_CART } from 'redux/slice';
@@ -14,9 +14,9 @@ function ProductDetails({ product }: { product: Product }) {
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const popupTimeout = useRef<any>(null);
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
 
-  const cart = useSelector((state: any) => state.cart);
+  const cart = useSelector((state: RootState) => state.cart);
 
   const variants: ProductVariant[] = [];
   product.variants.edges.forEach((variant) => {
@@ -34,7 +34,7 @@ function ProductDetails({ product }: { product: Product }) {
     handle: product.handle,
     productType: product.productType,
     variantQuantity: 1,
-    // cartId: cart.id,
+    cartId: cart.id,
     image: {
       src: variant?.image.url ?? '',
       alt: variant?.image.altText ?? '',
@@ -43,9 +43,26 @@ function ProductDetails({ product }: { product: Product }) {
   };
 
   const handleCreateCart = async () => {
-    dispatch<any>(CREATE_CART(item))
-      .then((res: any) => setCartResponse(res.payload))
-      .finally(() => setIsProcessing(false));
+    setIsProcessing(true);
+
+    const existingItem = cart.items.find(
+      (product: any) => product.item.id === variant.id,
+    );
+
+    if (existingItem && existingItem.line.node.quantity >= 10) {
+      alert('La quantité maximale de ce produit est de 10.');
+      return;
+    }
+
+    if (cart.id === null) {
+      dispatch(CREATE_CART(item))
+        .then((res: any) => setCartResponse(res.payload))
+        .finally(() => setIsProcessing(false));
+    } else {
+      dispatch(ADD_TO_CART(item))
+        .then((res: any) => setCartResponse(res.payload))
+        .finally(() => setIsProcessing(false));
+    }
   };
 
   // console.log(cartResponse);

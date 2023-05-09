@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { createCart } from 'libs/shopify/storefront';
+import { addToCart, createCart, delFromCart } from 'libs/shopify/storefront';
 
 type Initial = {
   items: [];
@@ -35,8 +35,34 @@ export const CREATE_CART = createAsyncThunk(
   async (item: CreateCartItem, { rejectWithValue }) => {
     const { id, variantQuantity } = item;
     try {
-      const cartCreated = await createCart(id, variantQuantity);
+      const cartCreated: any = await createCart(id, variantQuantity);
       return { item, cartCreated };
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const ADD_TO_CART = createAsyncThunk(
+  'cart/addToCart',
+  async (item: any, { rejectWithValue }) => {
+    const { cartId, id, variantQuantity } = item;
+    try {
+      const cartUpdated: any = await addToCart(cartId, id, variantQuantity);
+      return { item, cartUpdated };
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const DEL_FROM_CART = createAsyncThunk(
+  'cart/delFromCart',
+  async (item: any, { rejectWithValue }) => {
+    const { cartId, id } = item;
+    try {
+      const cartDeleted: any = await delFromCart(cartId, id);
+      return { item, cartDeleted };
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -76,10 +102,65 @@ export const cartSlice = createSlice({
       state.chargeAmount = cartCreated.cost.checkoutChargeAmount.amount;
       state.error = null;
     });
+    builder.addCase(CREATE_CART.rejected, (state, action) => {
+      state.error = action.payload as string;
+    });
+    builder.addCase(CREATE_CART.pending, (state) => {
+      state.error = null;
+    });
+    builder.addCase(ADD_TO_CART.fulfilled, (state, action) => {
+      const { item, cartUpdated } = action.payload;
+
+      state.items = cartUpdated.lines.edges.map((line: any) => {
+        const items = {
+          handle: item.handle,
+          id: item.id,
+          title: item.title,
+          variantQuantity: item.variantQuantity,
+        };
+        return {
+          line: line,
+          item: items,
+        };
+      });
+      state.quantity = cartUpdated.totalQuantity;
+      state.chargeAmount = cartUpdated.cost.checkoutChargeAmount.amount;
+      state.error = null;
+    });
+    builder.addCase(ADD_TO_CART.rejected, (state, action) => {
+      state.error = action.payload as string;
+    });
+    builder.addCase(ADD_TO_CART.pending, (state) => {
+      state.error = null;
+    });
+    builder.addCase(DEL_FROM_CART.fulfilled, (state, action) => {
+      const { item, cartDeleted } = action.payload;
+
+      state.items = cartDeleted.lines.edges.map((line: any) => {
+        const items = {
+          handle: item.handle,
+          id: item.id,
+          title: item.title,
+          variantQuantity: item.variantQuantity,
+        };
+        return {
+          line: line,
+          item: items,
+        };
+      });
+      state.quantity = cartDeleted.totalQuantity;
+      state.chargeAmount = cartDeleted.cost.checkoutChargeAmount.amount;
+      state.error = null;
+    });
+    builder.addCase(DEL_FROM_CART.rejected, (state, action) => {
+      state.error = action.payload as string;
+    });
+    builder.addCase(DEL_FROM_CART.pending, (state) => {
+      state.error = null;
+    });
   },
 });
 
 export const { CLEAR_CART } = cartSlice.actions;
 
-// It is a convention to export reducer as a default export:
 export default cartSlice.reducer;
