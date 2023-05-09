@@ -1,5 +1,6 @@
 import Head from 'next/head';
 import { getAllProducts } from 'libs/shopify/storefront';
+import ProductList from '@/components/Landing/ProductList';
 
 export async function getServerSideProps() {
   const products = await getAllProducts();
@@ -11,8 +12,6 @@ export async function getServerSideProps() {
 }
 
 export default function Home({ products }: { products: any }) {
-  console.log(products);
-
   return (
     <>
       <Head>
@@ -27,9 +26,7 @@ export default function Home({ products }: { products: any }) {
         <meta property="og:image" content="/favicon.ico" />
         <meta property="og:url" content="https://www.example.com" />
       </Head>
-      <main>
-        <h1>Salut</h1>
-      </main>
+      <ProductList products={products} />
     </>
   );
 }

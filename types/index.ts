@@ -28,7 +28,7 @@ export interface VariantItem {
   handle: string;
   productType: string;
   variantQuantity: number;
-  cartId: string;
+  // cartId: string;
   image: {
     src: string;
     alt: string;
