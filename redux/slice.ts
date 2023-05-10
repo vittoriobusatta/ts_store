@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { addToCart, createCart, delFromCart } from 'libs/shopify/storefront';
 import { VariantCartAdded } from 'types';
+import { CartItem, CartLine, CartLineItem } from 'types/cartTypes/cart';
 
 type InitialSlice = {
-  items: [];
+  items: CartLineItem[];
   id: null | string;
   quantity: number;
-  chargeAmount: number;
+  chargeAmount: string | number;
   error: null | string;
 };
 
@@ -72,9 +73,10 @@ export const cartSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(CREATE_CART.fulfilled, (state, action) => {
       const { item, cartCreated } = action.payload;
+      const { edges } = cartCreated.lines;
 
-      state.items = cartCreated.lines.edges.map((line: any) => {
-        const items = {
+      state.items = edges.map((line: CartLine) => {
+        const items: CartItem = {
           handle: item.handle,
           id: item.id,
           title: item.title,
@@ -98,9 +100,11 @@ export const cartSlice = createSlice({
     });
     builder.addCase(ADD_TO_CART.fulfilled, (state, action) => {
       const { item, cartUpdated } = action.payload;
+      const { edges } = cartUpdated.lines;
 
-      state.items = cartUpdated.lines.edges.map((line: any) => {
-        const items = {
+      state.items = edges.map((line: CartLine) => {
+        console.log(line);
+        const items: CartItem = {
           handle: item.handle,
           id: item.id,
           title: item.title,
@@ -111,6 +115,7 @@ export const cartSlice = createSlice({
           cartItem: items,
         };
       });
+
       state.quantity = cartUpdated.totalQuantity;
       state.chargeAmount = cartUpdated.cost.checkoutChargeAmount.amount;
       state.error = null;
@@ -123,9 +128,10 @@ export const cartSlice = createSlice({
     });
     builder.addCase(DEL_FROM_CART.fulfilled, (state, action) => {
       const { item, cartDeleted } = action.payload;
+      const { edges } = cartDeleted.lines;
 
-      state.items = cartDeleted.lines.edges.map((line: any) => {
-        const items = {
+      state.items = edges.map((line: CartLine) => {
+        const items: CartItem = {
           handle: item.handle,
           id: item.id,
           title: item.title,

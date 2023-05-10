@@ -1,9 +1,4 @@
-export interface ProductPriceRange {
-  __typename: string;
-  minVariantPrice: MoneyV2;
-}
-
-export interface compareAtPriceRange {
+export interface Price {
   __typename: string;
   minVariantPrice: MoneyV2;
 }
