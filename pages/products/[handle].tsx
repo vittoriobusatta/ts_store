@@ -11,13 +11,6 @@ type ProductPageProps = {
   product: Product;
   allProducts: any;
 };
-type StaticPaths = {
-  paths: { params: { handle: string } }[];
-  fallback: boolean;
-};
-type ProductHandle = {
-  handle: string;
-};
 
 export default function ProductPage({
   product,
@@ -29,6 +22,14 @@ export default function ProductPage({
     </>
   );
 }
+
+type StaticPaths = {
+  paths: { params: { handle: string } }[];
+  fallback: boolean;
+};
+type ProductHandle = {
+  handle: string;
+};
 
 export const getStaticPaths = async (): Promise<StaticPaths> => {
   const productHandles: ProductHandle[] = await getHandleProduct();

@@ -3,25 +3,23 @@ import { useState } from 'react';
 import { Product } from 'types';
 import ProductDetails from './ProductDetails';
 import RecommendedList from './RecommendedList';
+import { ImageType } from 'types/productTypes/image';
 
-interface Image {
-  url: string;
-  altText: string;
-}
-
-type ProductPageProps = {
+type ProductPageContentProps = {
   product: Product;
   allProducts: any;
 };
 
+type Images = ImageType[];
+
 export default function ProductPageContent({
   product,
   allProducts,
-}: ProductPageProps) {
+}: ProductPageContentProps) {
   const [Loading, setLoading] = useState(true);
 
-  const images: Image[] = [];
-  product.images.edges.forEach((image) => {
+  const images: Images = [];
+  product.images.edges.forEach((image: any) => {
     images.push(image.node);
   });
 

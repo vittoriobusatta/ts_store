@@ -1,6 +1,10 @@
 import ProductCard from './ProductCard';
 
-function ProductList({ products }: { products: any }) {
+type ProductListProps = {
+  products: any;
+};
+
+function ProductList({ products }: ProductListProps) {
   return (
     <section className="landing">
       <h1 className="landing__title">

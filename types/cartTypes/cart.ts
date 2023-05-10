@@ -1,3 +1,5 @@
+import { ImageType } from 'types/productTypes/image';
+
 export interface Cart {
   id: string;
   totalQuantity: number;
@@ -18,10 +20,7 @@ export interface Cart {
           price: {
             amount: number;
           };
-          image: {
-            url: string;
-            altText: string;
-          };
+          image: ImageType;
         };
       };
     }[];

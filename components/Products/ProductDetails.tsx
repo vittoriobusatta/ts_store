@@ -9,7 +9,11 @@ import { formatPrice } from 'utils/helpers';
 import { CloseIcon, SuccessIcon } from '../Vector';
 import { RootState } from 'redux/store';
 
-function ProductDetails({ product }: { product: Product }) {
+type ProductDetailsProps = {
+  product: Product;
+};
+
+function ProductDetails({ product }: ProductDetailsProps) {
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [cartResponse, setCartResponse] = useState<any>(null);
@@ -35,11 +39,6 @@ function ProductDetails({ product }: { product: Product }) {
     variantQuantity: 1,
     cartId: cart.id,
     price: parseFloat(variant?.price.amount ?? '0'),
-    // productType: product.productType,
-    // image: {
-    //   src: variant?.image.url ?? '',
-    //   alt: variant?.image.altText ?? '',
-    // },
   };
 
   const handleCreateCart = async () => {

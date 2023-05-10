@@ -3,7 +3,11 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { formatPrice } from 'utils/helpers';
 
-function ProductCard({ product }: { product: any }) {
+type ProductCardProps = {
+  product: any;
+};
+
+function ProductCard({ product }: ProductCardProps) {
   const { handle, title } = product;
   const { altText, url } = product.images.edges[0].node;
   const { amount } = product.priceRange.minVariantPrice;
