@@ -1,10 +1,15 @@
 import ProductPageContent from '@/components/Products/ProductPageContent';
-import { getHandleProduct, getSingleProduct } from 'libs/shopify/storefront';
+import {
+  getAllProducts,
+  getHandleProduct,
+  getSingleProduct,
+} from 'libs/shopify/storefront';
 import { GetStaticProps } from 'next';
 import { Product } from 'types';
 
 type ProductPageProps = {
   product: Product;
+  allProducts: any;
 };
 type StaticPaths = {
   paths: { params: { handle: string } }[];
@@ -14,10 +19,13 @@ type ProductHandle = {
   handle: string;
 };
 
-export default function ProductPage({ product }: ProductPageProps) {
+export default function ProductPage({
+  product,
+  allProducts,
+}: ProductPageProps) {
   return (
     <>
-      <ProductPageContent product={product} />
+      <ProductPageContent product={product} allProducts={allProducts} />
     </>
   );
 }
@@ -35,7 +43,12 @@ export const getStaticPaths = async (): Promise<StaticPaths> => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (typeof params?.handle === 'string') {
     const product: Product = await getSingleProduct(params.handle);
-    return { props: { product } };
+    return {
+      props: {
+        product,
+        allProducts: await getAllProducts(),
+      },
+    };
   }
   return { props: {} };
 };

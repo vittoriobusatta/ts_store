@@ -1,50 +1,54 @@
-// import React from "react";
-// import Image from "next/image";
-// import Link from "next/link";
+import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 
-// function RecommendedList({ current, allProducts }) {
-//   function shuffle(array) {
-//     let currentIndex = array.length,
-//       temporaryValue,
-//       randomIndex;
+type RecommendedListProps = {
+  current: any;
+  allProducts: any;
+};
 
-//     while (0 !== currentIndex) {
-//       randomIndex = Math.floor(Math.random() * currentIndex);
-//       currentIndex -= 1;
+export default function RecommendedList({
+  current,
+  allProducts,
+}: RecommendedListProps) {
+  function shuffle(array: any) {
+    let currentIndex = array.length,
+      temporaryValue,
+      randomIndex;
 
-//       temporaryValue = array[currentIndex];
-//       array[currentIndex] = array[randomIndex];
-//       array[randomIndex] = temporaryValue;
-//     }
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
 
-//     return array;
-//   }
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
 
-//   const products = shuffle(allProducts)
-//     .filter((product) => product.id !== current.id)
-//     .slice(0, 4);
+    return array;
+  }
 
-//   return (
-//     <div className="recommended">
-//       <h2>Vous aimerez peut-être aussi</h2>
-//       <ul className="recommended__list">
-//         {products.map((product) => {
-//           const { url, altText } = product.images.edges[0].node;
-//           const { handle } = product;
+  const products = shuffle(allProducts)
+    .filter((product: any) => product.id !== current.id)
+    .slice(0, 4);
 
-//           return (
-//             <li key={
-//               product.id
-//             }>
-//               <Link href={`/products/${handle}`} key={product.id}>
-//                 <Image width={200} height={200} src={url} alt={altText} />
-//               </Link>
-//             </li>
-//           );
-//         })}
-//       </ul>
-//     </div>
-//   );
-// }
+  return (
+    <div className="recommended">
+      <h2>Vous aimerez peut-être aussi</h2>
+      <ul className="recommended__list">
+        {products.map((product: any) => {
+          const { url, altText } = product.images.edges[0].node;
+          const { handle } = product;
 
-// export default RecommendedList;
+          return (
+            <li key={product.id}>
+              <Link href={`/products/${handle}`} key={product.id}>
+                <Image width={200} height={200} src={url} alt={altText} />
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}

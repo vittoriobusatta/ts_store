@@ -3,10 +3,11 @@ import stripeClient from '../../../libs/stripe';
 const domain = process.env.NEXT_PUBLIC_CLIENT_HOSTNAME;
 // const domain = "http://localhost:3000";
 
-async function createCheckoutSession(req, res) {
+async function createCheckoutSession(req: any, res: any): Promise<void> {
   const { items, cartId } = req.body;
+
   const lineItems = items.map((item: any) => {
-    const { title } = item.item;
+    const { title } = item.cartItem;
     const { price, image } = item.line.node.merchandise;
     const { quantity } = item.line.node;
     return {
@@ -58,10 +59,15 @@ async function createCheckoutSession(req, res) {
       },
     });
 
-    res.status(200).json({ sessionId: session.id, url: session.url });
+    res.status(200);
+    res.setHeader('Content-Type', 'application/json');
+    res.write(JSON.stringify({ sessionId: session.id, url: session.url }));
+    res.end();
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: 'Something went wrong' });
+    res.status(500);
+    res.setHeader('Content-Type', 'application/json');
+    res.write(JSON.stringify({ message: 'Session not found', err }));
+    res.end();
   }
 }
 

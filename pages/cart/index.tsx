@@ -10,7 +10,7 @@ import { RootState } from 'redux/store';
 import { AppDispatch } from 'types';
 import { formatPrice } from 'utils/helpers';
 
-function Cart() {
+export default function Cart() {
   const cart = useSelector((state: RootState) => state.cart);
   const dispatch: AppDispatch = useDispatch();
 
@@ -28,8 +28,6 @@ function Cart() {
   const handleEmptyCart = () => {
     dispatch(CLEAR_CART());
   };
-
-  console.log(cart);
 
   const handleCheckout = async () => {
     const url = `/api/checkout/create`;
@@ -133,5 +131,3 @@ function Cart() {
     </section>
   );
 }
-
-export default Cart;

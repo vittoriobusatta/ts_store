@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { addToCart, createCart, delFromCart } from 'libs/shopify/storefront';
 import { VariantCartAdded } from 'types';
 
-type Initial = {
+type InitialSlice = {
   items: [];
   id: null | string;
   quantity: number;
@@ -10,7 +10,7 @@ type Initial = {
   error: null | string;
 };
 
-const initialState: Initial = {
+const initialState: InitialSlice = {
   items: [],
   id: null,
   quantity: 0,

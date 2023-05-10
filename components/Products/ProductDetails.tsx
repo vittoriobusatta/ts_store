@@ -65,8 +65,6 @@ function ProductDetails({ product }: { product: Product }) {
     }
   };
 
-  console.log(cartResponse);
-
   useEffect(() => {
     const displayPopup = () => {
       if (cartResponse) {

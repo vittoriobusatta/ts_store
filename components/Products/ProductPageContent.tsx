@@ -2,15 +2,22 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { Product } from 'types';
 import ProductDetails from './ProductDetails';
-// import ProductDetails from './ProductDetails';
-// import RecommendedList from './RecommendedList';
+import RecommendedList from './RecommendedList';
 
 interface Image {
   url: string;
   altText: string;
 }
 
-export default function ProductPageContent({ product }: { product: Product }) {
+type ProductPageProps = {
+  product: Product;
+  allProducts: any;
+};
+
+export default function ProductPageContent({
+  product,
+  allProducts,
+}: ProductPageProps) {
   const [Loading, setLoading] = useState(true);
 
   const images: Image[] = [];
@@ -49,8 +56,7 @@ export default function ProductPageContent({ product }: { product: Product }) {
       </div>
 
       <ProductDetails product={product} />
-
-      {/* <RecommendedList current={product} allProducts={allProducts} /> */}
+      <RecommendedList current={product} allProducts={allProducts} />
     </section>
   );
 }
