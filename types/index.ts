@@ -26,18 +26,18 @@ export type Product = {
   variants: ProductVariantConnection;
 };
 
-export type VariantItem = {
+export type VariantCartAdded = {
   id: string;
   title: string;
-  handle: string;
-  productType: string;
   variantQuantity: number;
   cartId: string;
-  image: {
-    src: string;
-    alt: string;
-  };
   price: number;
+  handle: string;
+  // productType: string;
+  // image: {
+  //   src: string;
+  //   alt: string;
+  // };
 };
 
 export type ProductVariant = {
@@ -56,6 +56,5 @@ export type ProductVariant = {
     altText: string;
   };
 };
-
 
 export type AppDispatch = ThunkDispatch<RootState, any, Action>;

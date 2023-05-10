@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 
 function Header() {
   const quantity = useSelector((state: any) => state.cart.quantity);
-  console.log(quantity);
 
   return (
     <header>

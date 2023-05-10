@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { addToCart, createCart, delFromCart } from 'libs/shopify/storefront';
+import { VariantCartAdded } from 'types';
 
 type Initial = {
   items: [];
@@ -17,22 +18,9 @@ const initialState: Initial = {
   error: null,
 };
 
-type CreateCartItem = {
-  id: string;
-  title: string;
-  handle: string;
-  productType: string;
-  variantQuantity: number;
-  image: {
-    src: string;
-    alt: string;
-  };
-  price: number;
-};
-
 export const CREATE_CART = createAsyncThunk(
   'cart/createCart',
-  async (item: CreateCartItem, { rejectWithValue }) => {
+  async (item: VariantCartAdded, { rejectWithValue }) => {
     const { id, variantQuantity } = item;
     try {
       const cartCreated: any = await createCart(id, variantQuantity);
@@ -45,7 +33,7 @@ export const CREATE_CART = createAsyncThunk(
 
 export const ADD_TO_CART = createAsyncThunk(
   'cart/addToCart',
-  async (item: any, { rejectWithValue }) => {
+  async (item: VariantCartAdded, { rejectWithValue }) => {
     const { cartId, id, variantQuantity } = item;
     try {
       const cartUpdated: any = await addToCart(cartId, id, variantQuantity);
@@ -94,7 +82,7 @@ export const cartSlice = createSlice({
         };
         return {
           line: line,
-          item: items,
+          cartItem: items,
         };
       });
       state.id = cartCreated.id;
@@ -120,7 +108,7 @@ export const cartSlice = createSlice({
         };
         return {
           line: line,
-          item: items,
+          cartItem: items,
         };
       });
       state.quantity = cartUpdated.totalQuantity;
@@ -145,7 +133,7 @@ export const cartSlice = createSlice({
         };
         return {
           line: line,
-          item: items,
+          cartItem: items,
         };
       });
       state.quantity = cartDeleted.totalQuantity;

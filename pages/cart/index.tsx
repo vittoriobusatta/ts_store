@@ -29,6 +29,8 @@ function Cart() {
     dispatch(CLEAR_CART());
   };
 
+  console.log(cart);
+
   const handleCheckout = async () => {
     const url = `/api/checkout/create`;
 
@@ -61,12 +63,12 @@ function Cart() {
       ) : (
         <ul className="cart__list">
           {cart.items.map((products: any) => {
-            const { title, handle } = products.item;
+            const { title, handle } = products.cartItem;
             const { image, price, quantityAvailable } =
               products.line.node.merchandise;
-            const { quantity } = products.line.node;
+            const { quantity, id } = products.line.node;
             return (
-              <li className="cart__item" key={products.line.node.id}>
+              <li className="cart__item" key={id}>
                 <div className="cart__item__picture">
                   <Link href={`/products/${handle}`}>
                     <div className="placeholder" />
@@ -92,7 +94,7 @@ function Cart() {
                   <button
                     onClick={() => {
                       handleDeleteItem({
-                        id: products.line.node.id,
+                        id: id,
                         cartId: cart.id,
                       });
                     }}
