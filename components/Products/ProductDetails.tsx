@@ -22,12 +22,17 @@ function ProductDetails({ product }: ProductDetailsProps) {
 
   const cart = useSelector((state: RootState) => state.cart);
 
+  // Create an empty array to hold the variants
   const variants: ProductVariant[] = [];
+  // Iterate over the variants from the GraphQL response
   product.variants.edges.forEach((variant) => {
+    // Add each variant to the array
     variants.push(variant.node);
   });
 
+  // Find the first variant that is available for sale
   let variant = variants.find((variant) => variant.availableForSale);
+  // If none of the variants are available, use the first variant
   if (!variant) {
     variant = variants[0];
   }
@@ -43,25 +48,44 @@ function ProductDetails({ product }: ProductDetailsProps) {
 
   const handleCreateCart = async () => {
     setIsProcessing(true);
-
+    // Check if this variant already exists in the cart
     const existingItem = cart.items.find(
       (product: any) => product.cartItem.id === variant?.id,
     );
-
+    // If the line item exists and has a quantity greater than or equal to 10, display an error message
     if (existingItem && existingItem.line.node.quantity >= 10) {
       alert('La quantité maximale de ce produit est de 10.');
       return;
     }
-
     if (cart.id === null) {
+      // If cart is null, this is a new cart, so we'll need to create it
       dispatch(CREATE_CART(productAdded))
         .then((res: any) => setCartResponse(res.payload))
         .finally(() => setIsProcessing(false));
     } else {
+      // If cart is not null, we'll just add the item to the existing cart
       dispatch(ADD_TO_CART(productAdded))
         .then((res: any) => setCartResponse(res.payload))
         .finally(() => setIsProcessing(false));
     }
+  };
+
+  const handleCheckout = async () => {
+    const url = `/api/checkout/create`;
+    axios
+      .post(url, {
+        // Include the cart items and ID in the request body
+        items: cart.items,
+        cartId: cart.id,
+      })
+      .then((res) => {
+        // If the request is successful, redirect the user to the checkout URL
+        window.location.href = res.data.url;
+      })
+      .catch((err) => {
+        // If there's an error, log it to the console
+        console.log(err);
+      });
   };
 
   useEffect(() => {
@@ -78,21 +102,6 @@ function ProductDetails({ product }: ProductDetailsProps) {
     };
     displayPopup();
   }, [cartResponse]);
-
-  const handleCheckout = async () => {
-    const url = `/api/checkout/create`;
-    axios
-      .post(url, {
-        items: cart.items,
-        cartId: cart.id,
-      })
-      .then((res) => {
-        window.location.href = res.data.url;
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
   return (
     <>
@@ -137,10 +146,10 @@ function ProductDetails({ product }: ProductDetailsProps) {
             </button>
           </div>
           <div className="product__popup__item">
-            <Link href={`/products/${cartResponse.item.handle}`}>
+            <Link href={`/products/${cartResponse.args.handle}`}>
               <div className="placeholder" />
               <Image
-                key={cartResponse.item.id}
+                key={cartResponse.args.id}
                 src={variant?.image.url}
                 alt={variant?.image.altText}
                 width={62}
@@ -149,9 +158,9 @@ function ProductDetails({ product }: ProductDetailsProps) {
               />
             </Link>
             <div className="product__popup__item__info">
-              <h1>{cartResponse.item.title}</h1>
+              <h1>{cartResponse.args.title}</h1>
               <h2>{product.productType}</h2>
-              <h3>{formatPrice(cartResponse.item.price)}</h3>
+              <h3>{formatPrice(cartResponse.args.price)}</h3>
             </div>
           </div>
 

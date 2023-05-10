@@ -19,43 +19,47 @@ const initialState: InitialSlice = {
   error: null,
 };
 
-export const CREATE_CART = createAsyncThunk(
-  'cart/createCart',
-  async (item: VariantCartAdded, { rejectWithValue }) => {
-    const { id, variantQuantity } = item;
-    try {
-      const cartCreated: any = await createCart(id, variantQuantity);
-      return { item, cartCreated };
-    } catch (error: any) {
-      return rejectWithValue(error.message);
-    }
-  },
+// create an async thunk - this is a function that will return a promise
+export const makeAsyncThunk = <T, A extends any[]>(
+  // the type prefix is used to create the action type
+  typePrefix: string,
+  // the api function is the function we'll call to make the API request
+  apiFunction: (...args: A) => Promise<any>,
+  // arg names are the names of the arguments we need to pass to the api function
+  argNames: (keyof T)[],
+) =>
+  createAsyncThunk(
+    `cart/${typePrefix}`,
+    async (args: T, { rejectWithValue }) => {
+      try {
+        // extract the arguments from the args object
+        const extractedArgs = argNames.map((argName) => args[argName]) as A;
+        // call the api function
+        const response = await apiFunction(...extractedArgs);
+        // return the arguments and the response
+        return { args, response };
+      } catch (error: any) {
+        // if there was an error, return the error message
+        return rejectWithValue(error.message);
+      }
+    },
+  );
+
+export const ADD_TO_CART = makeAsyncThunk<
+  VariantCartAdded,
+  [string, string, number]
+>('addToCart', addToCart, ['cartId', 'id', 'variantQuantity']);
+
+export const CREATE_CART = makeAsyncThunk<VariantCartAdded, [string, number]>(
+  'createCart',
+  createCart,
+  ['id', 'variantQuantity'],
 );
 
-export const ADD_TO_CART = createAsyncThunk(
-  'cart/addToCart',
-  async (item: VariantCartAdded, { rejectWithValue }) => {
-    const { cartId, id, variantQuantity } = item;
-    try {
-      const cartUpdated: any = await addToCart(cartId, id, variantQuantity);
-      return { item, cartUpdated };
-    } catch (error: any) {
-      return rejectWithValue(error.message);
-    }
-  },
-);
-
-export const DEL_FROM_CART = createAsyncThunk(
-  'cart/delFromCart',
-  async (item: any, { rejectWithValue }) => {
-    const { cartId, id } = item;
-    try {
-      const cartDeleted: any = await delFromCart(cartId, id);
-      return { item, cartDeleted };
-    } catch (error: any) {
-      return rejectWithValue(error.message);
-    }
-  },
+export const DEL_FROM_CART = makeAsyncThunk<any, [string, string]>(
+  'delFromCart',
+  delFromCart,
+  ['cartId', 'id'],
 );
 
 export const cartSlice = createSlice({
@@ -72,24 +76,24 @@ export const cartSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(CREATE_CART.fulfilled, (state, action) => {
-      const { item, cartCreated } = action.payload;
-      const { edges } = cartCreated.lines;
+      const { args, response } = action.payload;
+      const { edges } = response.lines;
 
       state.items = edges.map((line: CartLine) => {
         const items: CartItem = {
-          handle: item.handle,
-          id: item.id,
-          title: item.title,
-          variantQuantity: item.variantQuantity,
+          handle: args.handle,
+          id: args.id,
+          title: args.title,
+          variantQuantity: args.variantQuantity,
         };
         return {
           line: line,
           cartItem: items,
         };
       });
-      state.id = cartCreated.id;
-      state.quantity = cartCreated.totalQuantity;
-      state.chargeAmount = cartCreated.cost.checkoutChargeAmount.amount;
+      state.id = response.id;
+      state.quantity = response.totalQuantity;
+      state.chargeAmount = response.cost.checkoutChargeAmount.amount;
       state.error = null;
     });
     builder.addCase(CREATE_CART.rejected, (state, action) => {
@@ -99,16 +103,15 @@ export const cartSlice = createSlice({
       state.error = null;
     });
     builder.addCase(ADD_TO_CART.fulfilled, (state, action) => {
-      const { item, cartUpdated } = action.payload;
-      const { edges } = cartUpdated.lines;
+      const { args, response } = action.payload;
+      const { edges } = response.lines;
 
       state.items = edges.map((line: CartLine) => {
-        console.log(line);
         const items: CartItem = {
-          handle: item.handle,
-          id: item.id,
-          title: item.title,
-          variantQuantity: item.variantQuantity,
+          handle: args.handle,
+          id: args.id,
+          title: args.title,
+          variantQuantity: args.variantQuantity,
         };
         return {
           line: line,
@@ -116,8 +119,8 @@ export const cartSlice = createSlice({
         };
       });
 
-      state.quantity = cartUpdated.totalQuantity;
-      state.chargeAmount = cartUpdated.cost.checkoutChargeAmount.amount;
+      state.quantity = response.totalQuantity;
+      state.chargeAmount = response.cost.checkoutChargeAmount.amount;
       state.error = null;
     });
     builder.addCase(ADD_TO_CART.rejected, (state, action) => {
@@ -127,23 +130,24 @@ export const cartSlice = createSlice({
       state.error = null;
     });
     builder.addCase(DEL_FROM_CART.fulfilled, (state, action) => {
-      const { item, cartDeleted } = action.payload;
-      const { edges } = cartDeleted.lines;
+      const { args, response } = action.payload;
+      const { edges } = response.lines;
 
       state.items = edges.map((line: CartLine) => {
         const items: CartItem = {
-          handle: item.handle,
-          id: item.id,
-          title: item.title,
-          variantQuantity: item.variantQuantity,
+          handle: args.handle,
+          id: args.id,
+          title: args.title,
+          variantQuantity: args.variantQuantity,
         };
         return {
           line: line,
           cartItem: items,
         };
       });
-      state.quantity = cartDeleted.totalQuantity;
-      state.chargeAmount = cartDeleted.cost.checkoutChargeAmount.amount;
+
+      state.quantity = response.totalQuantity;
+      state.chargeAmount = response.cost.checkoutChargeAmount.amount;
       state.error = null;
     });
     builder.addCase(DEL_FROM_CART.rejected, (state, action) => {

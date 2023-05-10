@@ -18,7 +18,9 @@ export default function ProductPageContent({
 }: ProductPageContentProps) {
   const [Loading, setLoading] = useState(true);
 
+  // Create an empty array to hold the images
   const images: Images = [];
+  // Loop through the images and add them to the array
   product.images.edges.forEach((image: any) => {
     images.push(image.node);
   });

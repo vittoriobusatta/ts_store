@@ -4,9 +4,9 @@ const {
   HttpLink,
   gql,
 } = require('@apollo/client');
-import queryAllProducts from '@/graphql/getAllProducts.graphql';
-import querySingleProduct from '@/graphql/getSingleProduct.graphql';
-import queryHandlesProducts from '@/graphql/getHandleProduct.graphql';
+import queryAllProducts from '@/graphql/product/getAllProducts.graphql';
+import querySingleProduct from '@/graphql/product/getSingleProduct.graphql';
+import queryHandlesProducts from '@/graphql/product/getHandleProduct.graphql';
 import mutationAddToCart from '@/graphql/cart/AddToCart.graphql';
 import mutationCreateCart from '@/graphql/cart/CreateCart.graphql';
 import mutationDelFromCart from '@/graphql/cart/DelFromCart.graphql';
